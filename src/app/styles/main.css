@@ -273,3 +273,52 @@ body {
 .important-link-success:focus {
     box-shadow: 0 0 0 2px rgb(34, 197, 94);
 }
+
+.font-normal {
+    font-size: 1rem;
+}
+
+.font-enlarged {
+    font-size: 1.125rem;
+}
+
+.font-huge {
+    font-size: 1.25rem;
+}
+
+.font-sans-serif {
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+.font-serif {
+    font-family: Georgia, 'Times New Roman', serif;
+}
+
+.color-default {
+    color-scheme: dark;
+}
+
+.color-monochrome {
+    filter: grayscale(100%);
+    color-scheme: dark;
+}
+
+.color-inverted {
+    filter: invert(1);
+    color-scheme: light;
+}
+
+.color-blue-bg {
+    background-color: #1e3a8a;
+    color: #ffffff;
+}
+
+.hide-images img,
+.hide-images [role="img"] {
+    display: none !important;
+}
+
+html {
+    --letter-spacing: 1px;
+    letter-spacing: var(--letter-spacing);
+}
