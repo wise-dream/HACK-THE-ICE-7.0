@@ -38,10 +38,7 @@ const handleSnilsInput = (e: Event) => {
 }
 
 const saveProfile = () => {
-	// TODO: Сохранение данных профиля
 	console.log('Сохранение профиля:', { category: category.value, region: region.value, snils: snils.value })
-	// После сохранения можно перенаправить на главную
-	// navigateTo('/')
 }
 </script>
 
@@ -53,12 +50,10 @@ const saveProfile = () => {
 			<h1 class="text-3xl font-semibold text-text-main mb-6">Профиль</h1>
 
 			<div class="space-y-6">
-				<!-- Личные данные -->
 				<div class="rounded-lg border border-bg-elevated bg-bg-elevated p-4">
 					<h2 class="text-xl font-medium text-text-main mb-4">Личные данные</h2>
 
 					<div class="space-y-4">
-						<!-- Категория льготника -->
 						<div>
 							<label class="block text-base font-medium text-text-main mb-2">
 								Категория льготника
@@ -78,7 +73,6 @@ const saveProfile = () => {
 							</select>
 						</div>
 
-						<!-- Регион проживания -->
 						<div>
 							<label class="block text-base font-medium text-text-main mb-2">
 								Регион проживания
@@ -98,7 +92,6 @@ const saveProfile = () => {
 							</select>
 						</div>
 
-						<!-- СНИЛС -->
 						<div>
 							<label class="block text-base font-medium text-text-main mb-2">
 								Номер СНИЛС (опционально)
@@ -113,7 +106,6 @@ const saveProfile = () => {
 							/>
 						</div>
 
-						<!-- Кнопка проверки статуса -->
 						<button
 							type="button"
 							class="w-full rounded-lg border border-brand-primary bg-brand-primary/10 px-4 py-3 text-base font-medium text-brand-primary hover:bg-brand-primary/20 transition-colors"
@@ -123,19 +115,16 @@ const saveProfile = () => {
 					</div>
 				</div>
 
-				<!-- Интересующие категории -->
 				<div class="rounded-lg border border-bg-elevated bg-bg-elevated p-4">
 					<h2 class="text-xl font-medium text-text-main mb-4">Интересующие категории</h2>
 					<p class="text-base text-text-muted">Функционал в разработке</p>
 				</div>
 
-				<!-- Доступность -->
 				<div class="rounded-lg border border-bg-elevated bg-bg-elevated p-4">
 					<h2 class="text-xl font-medium text-text-main mb-4">Доступность</h2>
 					<p class="text-base text-text-muted">Функционал в разработке</p>
 				</div>
 
-				<!-- Безопасность -->
 				<div class="rounded-lg border border-bg-elevated bg-bg-elevated p-4">
 					<h2 class="text-xl font-medium text-text-main mb-4">Безопасность</h2>
 					<button
@@ -146,7 +135,6 @@ const saveProfile = () => {
 					</button>
 				</div>
 
-				<!-- Кнопка сохранения -->
 				<button
 					@click="saveProfile"
 					class="w-full rounded-lg bg-brand-primary px-4 py-3 text-base font-medium text-white hover:bg-brand-primary/90 transition-colors"

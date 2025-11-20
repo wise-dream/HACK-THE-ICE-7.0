@@ -8,7 +8,6 @@
 		aria-describedby="assistant-description"
 	>
 		<div class="card relative overflow-hidden border-brand-primary/20 bg-gradient-to-br from-brand-primary/10 via-white to-white">
-			<!-- Декоративный элемент -->
 			<div class="absolute top-0 right-0 w-32 h-32 bg-brand-primary/5 rounded-full blur-3xl -mr-16 -mt-16" aria-hidden="true"></div>
 			
 			<div class="relative z-10">

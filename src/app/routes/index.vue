@@ -3,5 +3,5 @@ import { MainPage } from '~/pages/main';
 </script>
 
 <template>
-  <HomePage />
+  <MainPage />
 </template>

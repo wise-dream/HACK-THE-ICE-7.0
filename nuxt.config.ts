@@ -1,4 +1,3 @@
-// nuxt.config.ts
 import { defineNuxtConfig } from 'nuxt/config'
 import { VitePWA } from 'vite-plugin-pwa'
 
