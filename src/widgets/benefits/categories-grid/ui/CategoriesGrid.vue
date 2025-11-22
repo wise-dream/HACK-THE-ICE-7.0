@@ -1,12 +1,44 @@
 <script setup lang="ts">
-const categories = [
-	{ icon: '🚍', name: 'Транспорт', key: 'transport' },
-	{ icon: '💊', name: 'Лекарства', key: 'medicines' },
-	{ icon: '🏠', name: 'ЖКХ', key: 'utilities' },
-	{ icon: '💰', name: 'Компенсации', key: 'compensations' },
-	{ icon: '🛒', name: 'Покупки/магазины', key: 'shopping' },
-	{ icon: '❤️', name: 'Соцподдержка', key: 'social' },
-];
+import { computed, onMounted } from 'vue'
+import type { Category } from '~/entities/benefit'
+import { useBenefitsStore, useReferencesStore } from '~/shared/stores'
+
+const referencesStore = useReferencesStore()
+const benefitsStore = useBenefitsStore()
+
+const categories = computed(() => {
+  return referencesStore.categories.slice(0, 6).map((cat: Category) => {
+    const benefitsInCategory = benefitsStore.byCategory(cat.slug)
+    return {
+      icon: cat.icon || '📋',
+      name: cat.name,
+      key: cat.slug,
+      count: benefitsInCategory.length,
+    }
+  })
+})
+
+const getCategoryCount = (categorySlug: string) => {
+  const categoryBenefits = benefitsStore.byCategory(categorySlug)
+  return categoryBenefits.length
+}
+
+onMounted(async () => {
+  if (referencesStore.categories.length === 0) {
+    try {
+      await referencesStore.fetchCategories()
+    } catch (error) {
+      console.error('Failed to load categories:', error)
+    }
+  }
+  if (benefitsStore.benefits.length === 0) {
+    try {
+      await benefitsStore.fetchBenefits({ personalized: true })
+    } catch (error) {
+      console.error('Failed to load benefits:', error)
+    }
+  }
+})
 </script>
 
 <template>
@@ -20,11 +52,11 @@ const categories = [
 			Выберите категорию льгот для просмотра доступных льгот в вашем регионе
 		</p>
 		<div class="grid grid-cols-2 gap-4 sm:grid-cols-3" role="list">
-			<a
+			<NuxtLink
 				v-for="item in categories"
 				:key="item.key"
-				:href="`/benefits?category=${item.key}`"
-				:aria-label="`Перейти к категории ${item.name}. В этой категории доступно 4 льготы в вашем регионе`"
+				:to="`/benefits?category=${item.key}`"
+				:aria-label="`Перейти к категории ${item.name}. В этой категории доступно ${item.count} ${item.count === 1 ? 'льгота' : item.count < 5 ? 'льготы' : 'льгот'} в вашем регионе`"
 				role="listitem"
 				class="category-card link-focus-accent"
 			>
@@ -38,9 +70,9 @@ const categories = [
 				</div>
 				<div class="text-base font-semibold text-text-inverse mb-1">{{ item.name }}</div>
 				<div class="text-sm text-text-muted" aria-label="Количество льгот в категории">
-					4 льготы в вашем регионе
+					{{ item.count }} {{ item.count === 1 ? 'льгота' : item.count < 5 ? 'льготы' : 'льгот' }} в вашем регионе
 				</div>
-			</a>
+			</NuxtLink>
 		</div>
 	</section>
 </template>

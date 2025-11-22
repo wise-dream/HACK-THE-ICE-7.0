@@ -63,8 +63,10 @@ export interface RegisterData {
   email: string
   password: string
   password2: string
+  phone?: string
   beneficiary_category?: BeneficiaryCategory
   region?: string
+  snils?: string
 }
 
 export interface LoginData {

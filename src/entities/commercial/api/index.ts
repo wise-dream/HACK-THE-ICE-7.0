@@ -1,2 +1,1 @@
 export { offersApi } from './offers'
-

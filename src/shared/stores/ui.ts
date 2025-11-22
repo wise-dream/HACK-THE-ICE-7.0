@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
-import { ref, watch, computed } from 'vue'
-import type { FontSize, FontFamily, ColorMode, UserPreferences } from '~/entities/user'
+import { ref, watch } from 'vue'
+import type { ColorMode, FontFamily, FontSize, UserPreferences } from '~/entities/user'
 
 const STORAGE_KEY = 'ui_preferences'
 
-interface UIPreferences {
+interface UiPreferences {
   fontSize: FontSize
   fontFamily: FontFamily
   letterSpacing: number
@@ -14,7 +14,7 @@ interface UIPreferences {
   offlineMode: boolean
 }
 
-const defaultPreferences: UIPreferences = {
+const defaultPreferences: UiPreferences = {
   fontSize: 'normal',
   fontFamily: 'sans-serif',
   letterSpacing: 1,
@@ -24,9 +24,9 @@ const defaultPreferences: UIPreferences = {
   offlineMode: false,
 }
 
-const loadFromStorage = (): UIPreferences => {
+const loadFromStorage = (): UiPreferences => {
   if (typeof window === 'undefined') return defaultPreferences
-  
+
   try {
     const stored = localStorage.getItem(STORAGE_KEY)
     if (stored) {
@@ -36,13 +36,13 @@ const loadFromStorage = (): UIPreferences => {
   } catch (error) {
     console.warn('Failed to load UI preferences from localStorage:', error)
   }
-  
+
   return defaultPreferences
 }
 
-const saveToStorage = (preferences: UIPreferences): void => {
+const saveToStorage = (preferences: UiPreferences): void => {
   if (typeof window === 'undefined') return
-  
+
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(preferences))
   } catch (error) {
@@ -52,7 +52,7 @@ const saveToStorage = (preferences: UIPreferences): void => {
 
 export const useUIStore = defineStore('ui', () => {
   const stored = loadFromStorage()
-  
+
   const fontSize = ref<FontSize>(stored.fontSize)
   const fontFamily = ref<FontFamily>(stored.fontFamily)
   const letterSpacing = ref<number>(stored.letterSpacing)
@@ -63,21 +63,22 @@ export const useUIStore = defineStore('ui', () => {
 
   const applyStyles = () => {
     if (typeof document === 'undefined') return
-    
+
     const root = document.documentElement
-    
+
     root.classList.remove('font-normal', 'font-enlarged', 'font-huge')
     root.classList.add(`font-${fontSize.value}`)
-    
+
     root.classList.remove('font-sans-serif', 'font-serif')
     root.classList.add(`font-${fontFamily.value}`)
-    
+
     root.style.setProperty('--letter-spacing', `${letterSpacing.value}px`)
-    
+
     root.classList.remove('color-default', 'color-monochrome', 'color-inverted', 'color-blue-bg')
-    const colorModeClass = colorMode.value === 'blue_bg' ? 'color-blue-bg' : `color-${colorMode.value}`
+    const colorModeClass =
+      colorMode.value === 'blue_bg' ? 'color-blue-bg' : `color-${colorMode.value}`
     root.classList.add(colorModeClass)
-    
+
     if (!showImages.value) {
       root.classList.add('hide-images')
     } else {
@@ -85,22 +86,26 @@ export const useUIStore = defineStore('ui', () => {
     }
   }
 
-  watch([fontSize, fontFamily, letterSpacing, colorMode, showImages], () => {
-    const preferences: UIPreferences = {
-      fontSize: fontSize.value,
-      fontFamily: fontFamily.value,
-      letterSpacing: letterSpacing.value,
-      colorMode: colorMode.value,
-      showImages: showImages.value,
-      speechAssistantEnabled: speechAssistantEnabled.value,
-      offlineMode: offlineMode.value,
-    }
-    saveToStorage(preferences)
-    applyStyles()
-  }, { immediate: true })
+  watch(
+    [fontSize, fontFamily, letterSpacing, colorMode, showImages],
+    () => {
+      const preferences: UiPreferences = {
+        fontSize: fontSize.value,
+        fontFamily: fontFamily.value,
+        letterSpacing: letterSpacing.value,
+        colorMode: colorMode.value,
+        showImages: showImages.value,
+        speechAssistantEnabled: speechAssistantEnabled.value,
+        offlineMode: offlineMode.value,
+      }
+      saveToStorage(preferences)
+      applyStyles()
+    },
+    { immediate: true }
+  )
 
   watch([speechAssistantEnabled, offlineMode], () => {
-    const preferences: UIPreferences = {
+    const preferences: UiPreferences = {
       fontSize: fontSize.value,
       fontFamily: fontFamily.value,
       letterSpacing: letterSpacing.value,
@@ -132,8 +137,16 @@ export const useUIStore = defineStore('ui', () => {
     showImages.value = !showImages.value
   }
 
+  const setShowImages = (value: boolean): void => {
+    showImages.value = value
+  }
+
   const toggleSpeechAssistant = (): void => {
     speechAssistantEnabled.value = !speechAssistantEnabled.value
+  }
+
+  const setSpeechAssistant = (value: boolean): void => {
+    speechAssistantEnabled.value = value
   }
 
   const setOfflineMode = (mode: boolean): void => {
@@ -184,10 +197,11 @@ export const useUIStore = defineStore('ui', () => {
     setLetterSpacing,
     setColorMode,
     toggleShowImages,
+    setShowImages,
     toggleSpeechAssistant,
+    setSpeechAssistant,
     setOfflineMode,
     syncWithUserProfile,
     resetToDefaults,
   }
 })
-

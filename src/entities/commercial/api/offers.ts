@@ -1,8 +1,11 @@
 import { apiClient } from '~/shared/api/client'
-import type { CommercialOffer, BenefitStatus, PaginatedResponse } from '../model/types'
+import type { QueryParamValue } from '~/shared/api/client'
+import type { CommercialOffer } from '../model/types'
+import type { PaginatedResponse } from '~/entities/benefit/model/types'
 
 export interface GetOffersParams {
   partner_category?: string
+  [key: string]: string | number | boolean | undefined
   region?: string
   personalized?: boolean
   search?: string
@@ -12,11 +15,13 @@ export interface GetOffersParams {
 
 export const offersApi = {
   async getOffers(params?: GetOffersParams): Promise<PaginatedResponse<CommercialOffer>> {
-    return apiClient.get<PaginatedResponse<CommercialOffer>>('/offers/', params)
+    return apiClient.get<PaginatedResponse<CommercialOffer>>(
+      '/offers/',
+      params as Record<string, QueryParamValue>
+    )
   },
 
   async getOfferById(id: number): Promise<CommercialOffer> {
     return apiClient.get<CommercialOffer>(`/offers/${id}/`)
   },
 }
-

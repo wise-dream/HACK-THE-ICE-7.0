@@ -1,4 +1,4 @@
-import type { Benefit, BeneficiaryCategory, BenefitStatus } from '~/entities/benefit'
+import type { BeneficiaryCategory, Benefit, BenefitStatus } from '~/entities/benefit'
 import type { User } from '~/entities/user'
 import { isExpired, isExpiringSoon } from './date'
 
@@ -10,7 +10,9 @@ export const filterBenefitsByUser = (benefits: Benefit[], user: User): Benefit[]
     if (benefit.target_groups.includes(user.beneficiary_category as BeneficiaryCategory)) {
       if (user.region && benefit.regions && benefit.regions.length > 0) {
         if (benefit.applies_to_all_regions) return true
-        return benefit.regions.some((region) => region.code === user.region || region.name === user.region)
+        return benefit.regions.some(
+          (region) => region.code === user.region || region.name === user.region
+        )
       }
       if (benefit.applies_to_all_regions) return true
       return true
@@ -59,7 +61,10 @@ export const sortBenefits = (benefits: Benefit[], sortBy: SortBy = 'relevance'):
   }
 }
 
-export const getBenefitStatus = (validFrom: string, validTo: string | null | undefined): BenefitStatus => {
+export const getBenefitStatus = (
+  validFrom: string,
+  validTo: string | null | undefined
+): BenefitStatus => {
   if (validTo && isExpired(validTo)) {
     return 'expired'
   }
@@ -89,4 +94,3 @@ export const getExpiredBenefits = (benefits: Benefit[]): Benefit[] => {
     return isExpired(benefit.valid_to)
   })
 }
-

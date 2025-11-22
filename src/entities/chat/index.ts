@@ -1,7 +1,6 @@
 export type {
-  ChatMessage,
   ChatHistory,
+  ChatMessage,
   ChatRequest,
   ChatResponse,
 } from './model/types'
-

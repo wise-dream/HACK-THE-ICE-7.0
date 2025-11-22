@@ -18,4 +18,3 @@ export interface ChatResponse {
   response: string
   timestamp: string
 }
-

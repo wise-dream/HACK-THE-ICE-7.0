@@ -1,18 +1,18 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
-import { benefitsApi, type GetBenefitsParams } from '~/entities/benefit/api/benefits'
-import { offersApi, type GetOffersParams } from '~/entities/commercial/api/offers'
+import { computed, ref } from 'vue'
 import type {
   Benefit,
-  BenefitType,
-  BenefitStatus,
   BenefitCategory,
-  PaginatedResponse,
+  BenefitStatus,
+  BenefitType,
   DashboardResponse,
+  PaginatedResponse,
 } from '~/entities/benefit'
+import { benefitsApi, type GetBenefitsParams } from '~/entities/benefit/api/benefits'
 import type { CommercialOffer } from '~/entities/commercial'
-import { getActiveBenefits, getExpiringBenefits, getBenefitStatus } from '~/shared/utils/benefits'
+import { type GetOffersParams, offersApi } from '~/entities/commercial/api/offers'
 import type { PaginationMeta } from '~/shared/utils/api'
+import { getActiveBenefits, getBenefitStatus, getExpiringBenefits } from '~/shared/utils/benefits'
 
 interface BenefitsFilters {
   type?: BenefitType
@@ -20,7 +20,13 @@ interface BenefitsFilters {
   region?: string
   category?: string
   personalized?: boolean
-  ordering?: 'created_at' | 'popularity_score' | 'valid_from'
+  ordering?:
+    | 'created_at'
+    | 'popularity_score'
+    | 'valid_from'
+    | '-created_at'
+    | '-popularity_score'
+    | '-valid_from'
 }
 
 export const useBenefitsStore = defineStore('benefits', () => {
@@ -56,13 +62,11 @@ export const useBenefitsStore = defineStore('benefits', () => {
     })
   })
 
-  const byCategory = computed(() => {
-    return (category: BenefitCategory) => {
-      return benefits.value.filter((benefit) => {
-        return benefit.categories?.some((cat) => cat.slug === category)
-      })
-    }
-  })
+  const byCategory = (categorySlug: string | BenefitCategory): Benefit[] => {
+    return benefits.value.filter((benefit) => {
+      return benefit.categories?.some((cat) => cat.slug === categorySlug)
+    })
+  }
 
   const byType = computed(() => {
     return (type: BenefitType) => {
@@ -109,7 +113,7 @@ export const useBenefitsStore = defineStore('benefits', () => {
       isLoading.value = true
       const benefit = await benefitsApi.getBenefitById(id)
       selectedBenefit.value = benefit
-      
+
       const existingIndex = benefits.value.findIndex((b) => b.id === id)
       if (existingIndex >= 0) {
         benefits.value[existingIndex] = benefit
@@ -197,7 +201,7 @@ export const useBenefitsStore = defineStore('benefits', () => {
       isLoading.value = true
       const offer = await offersApi.getOfferById(id)
       selectedOffer.value = offer
-      
+
       const existingIndex = commercialOffers.value.findIndex((o) => o.id === id)
       if (existingIndex >= 0) {
         commercialOffers.value[existingIndex] = offer
@@ -253,4 +257,3 @@ export const useBenefitsStore = defineStore('benefits', () => {
     clearSelected,
   }
 })
-

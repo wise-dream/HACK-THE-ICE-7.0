@@ -17,6 +17,18 @@ logs
 .DS_Store
 .fleet
 .idea
+Thumbs.db
+*.map
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Build analysis
+.analyze
 
 # Local env files
 .env

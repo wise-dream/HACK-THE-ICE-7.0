@@ -22,7 +22,10 @@ export const formatDateTime = (date: string | Date | null | undefined): string =
   })
 }
 
-export const isExpiringSoon = (date: string | Date | null | undefined, days: number = 30): boolean => {
+export const isExpiringSoon = (
+  date: string | Date | null | undefined,
+  days: number = 30
+): boolean => {
   if (!date) return false
   const d = typeof date === 'string' ? new Date(date) : date
   if (isNaN(d.getTime())) return false
@@ -53,6 +56,7 @@ export const getDaysUntilExpiry = (date: string | Date | null | undefined): numb
 }
 
 export const formatDateForAPI = (date: Date): string => {
-  return date.toISOString().split('T')[0]
+  const isoString = date.toISOString()
+  const datePart = isoString.split('T')[0]
+  return datePart ?? ''
 }
-

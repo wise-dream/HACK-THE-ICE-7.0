@@ -1,324 +1,112 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
 
-html {
-    font-size: 16px;
+@theme {
+  /* Primary palette (твой зелёный) */
+  --color-primary-50: #f0fdf4;
+  --color-primary-100: #dcfce7;
+  --color-primary-200: #bbf7d0;
+  --color-primary-300: #86efac;
+  --color-primary-400: #4ade80;
+  --color-primary-500: #21a038;
+  --color-primary-600: #1d8d32;
+  --color-primary-700: #167028;
+  --color-primary-800: #0f541f;
+  --color-primary-900: #0a3d16;
+  --color-primary-950: #05220c;
+
+  /* Говорим Nuxt UI какой цвет считать основным */
+  --ui-primary: var(--color-primary-500);
+
+  /* Дополнительные зелёные, если нужны отдельно */
+  --color-green-50: #effdf5;
+  --color-green-100: #d9fbe8;
+  --color-green-200: #b3f5d1;
+  --color-green-300: #75edae;
+  --color-green-400: #00dc82;
+  --color-green-500: #00c16a;
+  --color-green-600: #00a155;
+  --color-green-700: #007f45;
+  --color-green-800: #016538;
+  --color-green-900: #0a5331;
+  --color-green-950: #052e16;
+
+  /* Brand */
+  --color-brand-primary: var(--color-primary-500);
+  --color-brand-soft: #9fe870;
+  --color-brand-accent: #38bdf8;
+
+  /* Background / text */
+  --color-bg-main: #f0fdf4;
+  --color-bg-elevated: #ffffff;
+
+  /* текст на светлом фоне должен быть тёмным */
+  --color-text-main: #020617;
+  --color-text-muted: #6b7280;
+  --color-text-inverse: #f9fafb;
+
+  /* Status */
+  --color-danger: #ef4444;
+  --color-warning: #f97316;
+  --color-success: #22c55e;
+
+  /* Radius */
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
 }
 
+:root {
+  --ui-primary: #21a038;
+}
+
+html,
 body {
-    font-size: 1rem;
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--color-text-main);
+  background-color: var(--color-bg-main);
+  color-scheme: light;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.button {
-    width: 100%;
-    min-width: 48px;
-    min-height: 48px;
-    border-radius: 12px;
-    background-color: #21A038;
-    border: 2px solid transparent;
-    cursor: pointer;
-    color: #fff;
-    font-size: 1rem;
-    font-weight: 600;
-    text-align: center;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: 14px 24px;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 8px rgba(33, 160, 56, 0.2);
-    position: relative;
-    overflow: hidden;
+/* Просто курсор для кнопок, без ломания Nuxt UI */
+
+button {
+  cursor: pointer;
 }
 
-.button:hover {
-    background-color: #1d8d32;
-    box-shadow: 0 4px 12px rgba(33, 160, 56, 0.3);
-    transform: translateY(-1px);
-}
-
-.button:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(33, 160, 56, 0.2);
-}
-
-.button:focus {
-    outline: none;
-    border-color: #9FE870;
-    box-shadow: 0 0 0 3px rgba(159, 232, 112, 0.3), 0 4px 12px rgba(33, 160, 56, 0.3);
-}
-
-.button:focus-visible {
-    outline: 2px solid #9FE870;
-    outline-offset: 2px;
-}
-
-.card-shadow {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-}
-
-.card-shadow-hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.12);
-}
+/* Screen reader only */
 
 .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
 
-.section-container {
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 768px;
-    padding-left: 1rem;
-    padding-right: 1rem;
+input,
+textarea,
+button[role="combobox"][option-attribute][value-attribute] {
+  width: 100%;
+  min-height: 48px;
+  padding-left: 24px;
+  border-radius: 16px;
 }
 
-.card {
-    border-radius: 1rem;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    background-color: #ffffff;
-    padding: 1.5rem;
-    box-shadow: 
-        0 1px 3px rgba(0, 0, 0, 0.12),
-        0 1px 2px rgba(0, 0, 0, 0.24),
-        0 -1px 2px rgba(0, 0, 0, 0.05);
-    color: rgb(2, 6, 23);
+button, a, input, textarea {
+  font-size: 16px;
+  cursor: pointer;
+  min-height: 48px;
+  border-radius: 16px;
 }
 
-.card .text-text-muted {
-    color: #4b5563;
-}
-
-.card-hover {
-    transition-property: box-shadow, border-color;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 150ms;
-}
-
-.card-hover:hover {
-    border-color: rgba(0, 0, 0, 0.15);
-    box-shadow: 
-        0 4px 6px rgba(0, 0, 0, 0.1),
-        0 2px 4px rgba(0, 0, 0, 0.06),
-        0 -2px 4px rgba(0, 0, 0, 0.06),
-        0 0 0 1px rgba(0, 0, 0, 0.05);
-}
-
-.link-focus {
-    border-radius: 0.75rem;
-}
-
-.link-focus:focus {
-    outline: 2px solid transparent;
-    outline-offset: 2px;
-    box-shadow: 0 0 0 2px rgb(11, 18, 32), 0 0 0 4px rgba(33, 160, 56, 0.5);
-}
-
-.link-focus-accent:focus {
-    outline: 2px solid transparent;
-    outline-offset: 2px;
-    box-shadow: 0 0 0 2px rgb(2, 6, 23), 0 0 0 4px rgba(56, 189, 248, 0.5);
-}
-
-.stat-card {
-    border-radius: 0.75rem;
-    background-color: #f9fafb;
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 0.5rem;
-    cursor: pointer;
-    transition-property: all;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 150ms;
-    color: rgb(2, 6, 23);
-}
-
-.stat-card .text-text-muted {
-    color: #4b5563;
-}
-
-.stat-card-default {
-    border: 1px solid rgba(11, 18, 32, 0.1);
-}
-
-.stat-card-default:hover {
-    border-color: rgba(33, 160, 56, 0.3);
-    background-color: rgba(33, 160, 56, 0.05);
-}
-
-.stat-card-warning {
-    border: 1px solid rgba(249, 115, 22, 0.2);
-}
-
-.stat-card-warning:hover {
-    border-color: rgba(249, 115, 22, 0.4);
-    background-color: rgba(249, 115, 22, 0.1);
-}
-
-.stat-card-success {
-    border: 1px solid rgba(34, 197, 94, 0.2);
-}
-
-.stat-card-success:hover {
-    border-color: rgba(34, 197, 94, 0.4);
-    background-color: rgba(34, 197, 94, 0.1);
-}
-
-.category-card {
-    position: relative;
-    border-radius: 0.75rem;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    background-color: #ffffff;
-    padding: 1.25rem;
-    transition-property: all;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 200ms;
-    color: rgb(2, 6, 23);
-    box-shadow: 
-        0 1px 3px rgba(0, 0, 0, 0.1),
-        0 1px 2px rgba(0, 0, 0, 0.06);
-}
-
-.category-card .text-text-muted {
-    color: #4b5563;
-}
-
-.category-card:hover {
-    border-color: rgb(56, 189, 248);
-    background-color: #f0f9ff;
-    box-shadow: 
-        0 10px 15px -3px rgba(0, 0, 0, 0.1), 
-        0 4px 6px -2px rgba(0, 0, 0, 0.05),
-        0 0 0 1px rgba(56, 189, 248, 0.2);
-    transform: translateY(-0.25rem);
-}
-
-.important-card {
-    border-radius: 0.75rem;
-    border-width: 2px;
-    padding: 1.25rem;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    background-color: #ffffff;
-    color: rgb(2, 6, 23);
-}
-
-.important-card-warning {
-    border-radius: 0.75rem;
-    border: 2px solid rgba(249, 115, 22, 0.4);
-    padding: 1.25rem;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    background: linear-gradient(to bottom right, #fff7ed, #ffffff);
-    color: rgb(2, 6, 23);
-}
-
-.important-card-success {
-    border-radius: 0.75rem;
-    border: 2px solid rgba(34, 197, 94, 0.4);
-    padding: 1.25rem;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    background: linear-gradient(to bottom right, #f0fdf4, #ffffff);
-    color: rgb(2, 6, 23);
-}
-
-.important-card .text-text-muted {
-    color: #4b5563;
-}
-
-.important-link {
-    font-size: 1rem;
-    font-weight: 500;
-    color: rgb(2, 6, 23);
-    border-radius: 0.25rem;
-    text-decoration: underline;
-    text-decoration-color: transparent;
-    transition-property: all;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 150ms;
-}
-
-.important-link:hover {
-    text-decoration-color: currentColor;
-}
-
-.important-link:focus {
-    outline: 2px solid transparent;
-    outline-offset: 2px;
-    box-shadow: 0 0 0 2px currentColor;
-}
-
-.important-link-warning:hover {
-    color: rgb(249, 115, 22);
-}
-
-.important-link-warning:focus {
-    box-shadow: 0 0 0 2px rgb(249, 115, 22);
-}
-
-.important-link-success:hover {
-    color: rgb(34, 197, 94);
-}
-
-.important-link-success:focus {
-    box-shadow: 0 0 0 2px rgb(34, 197, 94);
-}
-
-.font-normal {
-    font-size: 1rem;
-}
-
-.font-enlarged {
-    font-size: 1.125rem;
-}
-
-.font-huge {
-    font-size: 1.25rem;
-}
-
-.font-sans-serif {
-    font-family: system-ui, -apple-system, sans-serif;
-}
-
-.font-serif {
-    font-family: Georgia, 'Times New Roman', serif;
-}
-
-.color-default {
-    color-scheme: dark;
-}
-
-.color-monochrome {
-    filter: grayscale(100%);
-    color-scheme: dark;
-}
-
-.color-inverted {
-    filter: invert(1);
-    color-scheme: light;
-}
-
-.color-blue-bg {
-    background-color: #1e3a8a;
-    color: #ffffff;
-}
-
-.hide-images img,
-.hide-images [role="img"] {
-    display: none !important;
-}
-
-html {
-    --letter-spacing: 1px;
-    letter-spacing: var(--letter-spacing);
+button {
+  padding: 0 24px;
 }

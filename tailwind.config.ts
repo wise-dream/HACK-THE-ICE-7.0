@@ -8,13 +8,16 @@ const config: Config = {
     './src/widgets/**/*.{vue,js,ts}',
     './src/features/**/*.{vue,js,ts}',
     './src/entities/**/*.{vue,js,ts}',
-    './src/shared/**/*.{vue,js,ts}'
+    './src/shared/**/*.{vue,js,ts}',
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+      },
       colors: {
         bg: {
-          main: '#020617',
+          main: '#ffffff',
           elevated: '#0b1220',
         },
         brand: {
@@ -37,7 +40,7 @@ const config: Config = {
       },
     },
   },
-  plugins: []
+  plugins: [],
 }
 
 export default config

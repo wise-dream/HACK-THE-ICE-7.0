@@ -1,12 +1,53 @@
 <script setup lang="ts">
-const expiring = [
-	{ title: 'Компенсация ЖКХ', date: 'до 30.11.2025' },
-	{ title: 'Соцкарта — бесплатный проезд', date: 'до 05.12.2025' },
-];
+import { computed, onMounted } from 'vue'
+import type { Benefit } from '~/entities/benefit'
+import { useBenefitsStore } from '~/shared/stores'
+import { formatDate } from '~/shared/utils/date'
 
-const newOnes = [
-	{ title: 'Скидка на лекарства 15%', date: 'с 20.11.2025' },
-];
+const benefitsStore = useBenefitsStore()
+
+const expiring = computed(() => {
+  if (benefitsStore.dashboard?.expiring_benefits) {
+    return benefitsStore.dashboard.expiring_benefits.slice(0, 3).map((benefit: Benefit) => ({
+      id: benefit.id || benefit.benefit_id,
+      title: benefit.title,
+      date: benefit.valid_to ? `до ${formatDate(benefit.valid_to)}` : '',
+    }))
+  }
+  return benefitsStore.expiringBenefits.slice(0, 3).map((benefit: Benefit) => ({
+    id: benefit.id || benefit.benefit_id,
+    title: benefit.title,
+    date: benefit.valid_to ? `до ${formatDate(benefit.valid_to)}` : '',
+  }))
+})
+
+const newOnes = computed(() => {
+  return benefitsStore.newBenefits.slice(0, 3).map((benefit: Benefit) => ({
+    id: benefit.id || benefit.benefit_id,
+    title: benefit.title,
+    date: benefit.valid_from ? `с ${formatDate(benefit.valid_from)}` : '',
+  }))
+})
+
+onMounted(async () => {
+  if (!benefitsStore.dashboard) {
+    try {
+      await benefitsStore.getDashboard()
+    } catch (error) {
+      console.error('Failed to load dashboard data:', error)
+    }
+  }
+  if (benefitsStore.newBenefits.length === 0) {
+    try {
+      await benefitsStore.fetchBenefits({
+        ordering: '-valid_from',
+        personalized: true,
+      })
+    } catch (error) {
+      console.error('Failed to load new benefits:', error)
+    }
+  }
+})
 </script>
 
 <template>
@@ -21,6 +62,7 @@ const newOnes = [
 		</p>
 		<div class="space-y-4">
 			<div 
+				v-if="expiring.length > 0 || benefitsStore.isLoading"
 				class="important-card-warning"
 				role="region"
 				aria-labelledby="expiring-section-title"
@@ -29,22 +71,29 @@ const newOnes = [
 					<div class="h-2 w-2 rounded-full bg-warning animate-pulse" aria-hidden="true"></div>
 					<div id="expiring-section-title" class="text-base font-bold text-warning">Скоро истекают</div>
 				</div>
-				<ul class="space-y-3" role="list" aria-label="Список льгот, которые скоро истекают">
+				<ul v-if="benefitsStore.isLoading && expiring.length === 0" class="space-y-3" role="list" aria-label="Загрузка льгот, которые скоро истекают">
+					<li class="flex items-center justify-between gap-3 p-2 rounded-lg animate-pulse" role="listitem">
+						<div class="h-4 bg-warning/20 rounded w-3/4"></div>
+						<div class="h-4 bg-warning/20 rounded w-1/4"></div>
+					</li>
+				</ul>
+				<ul v-else class="space-y-3" role="list" aria-label="Список льгот, которые скоро истекают">
 					<li 
 						v-for="(item, idx) in expiring" 
-						:key="`exp-${idx}`" 
+						:key="`exp-${item.id || idx}`" 
 						class="flex items-center justify-between gap-3 p-2 rounded-lg hover:bg-warning/10 transition-colors"
 						role="listitem"
 					>
-						<a 
-							:href="`/benefits#${item.title.toLowerCase().replace(/\s+/g, '-')}`"
+						<NuxtLink 
+							:to="`/benefits/${item.id}`"
 							:aria-label="`${item.title}. Истекает ${item.date}. Перейти к подробной информации`"
 							class="important-link-warning"
 						>
 							{{ item.title }}
-						</a>
+						</NuxtLink>
 						<time 
-							:datetime="item.date.replace('до ', '').replace('до ', '')" 
+							v-if="item.date"
+							:datetime="item.date.replace('до ', '')" 
 							class="text-sm text-text-muted whitespace-nowrap"
 							aria-label="Срок действия до"
 						>
@@ -54,6 +103,7 @@ const newOnes = [
 				</ul>
 			</div>
 			<div 
+				v-if="newOnes.length > 0 || benefitsStore.isLoading"
 				class="important-card-success"
 				role="region"
 				aria-labelledby="new-section-title"
@@ -62,21 +112,28 @@ const newOnes = [
 					<div class="h-2 w-2 rounded-full bg-success" aria-hidden="true"></div>
 					<div id="new-section-title" class="text-base font-bold text-success">Новые для вас</div>
 				</div>
-				<ul class="space-y-3" role="list" aria-label="Список новых льгот, доступных для вас">
+				<ul v-if="benefitsStore.isLoading && newOnes.length === 0" class="space-y-3" role="list" aria-label="Загрузка новых льгот">
+					<li class="flex items-center justify-between gap-3 p-2 rounded-lg animate-pulse" role="listitem">
+						<div class="h-4 bg-success/20 rounded w-3/4"></div>
+						<div class="h-4 bg-success/20 rounded w-1/4"></div>
+					</li>
+				</ul>
+				<ul v-else class="space-y-3" role="list" aria-label="Список новых льгот, доступных для вас">
 					<li 
 						v-for="(item, idx) in newOnes" 
-						:key="`new-${idx}`" 
+						:key="`new-${item.id || idx}`" 
 						class="flex items-center justify-between gap-3 p-2 rounded-lg hover:bg-success/10 transition-colors"
 						role="listitem"
 					>
-						<a 
-							:href="`/benefits#${item.title.toLowerCase().replace(/\s+/g, '-')}`"
+						<NuxtLink 
+							:to="`/benefits/${item.id}`"
 							:aria-label="`${item.title}. Доступна ${item.date}. Перейти к подробной информации`"
 							class="important-link-success"
 						>
 							{{ item.title }}
-						</a>
+						</NuxtLink>
 						<time 
+							v-if="item.date"
 							:datetime="item.date.replace('с ', '')" 
 							class="text-sm text-text-muted whitespace-nowrap"
 							aria-label="Доступна с"

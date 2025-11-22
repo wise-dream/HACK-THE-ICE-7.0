@@ -1,5 +1,10 @@
 import { apiClient } from '~/shared/api/client'
-import type { UserProfile, UpdatePreferencesData, HideBenefitRequest, UnhideBenefitRequest } from '../model/types'
+import type {
+  HideBenefitRequest,
+  UnhideBenefitRequest,
+  UpdatePreferencesData,
+  UserProfile,
+} from '../model/types'
 
 export const profileApi = {
   async getProfile(): Promise<UserProfile> {
@@ -15,11 +20,14 @@ export const profileApi = {
   },
 
   async hideBenefit(benefitId: number): Promise<void> {
-    return apiClient.post<void>('/profile/hide_benefit/', { benefit_id: benefitId } as HideBenefitRequest)
+    return apiClient.post<void>('/profile/hide_benefit/', {
+      benefit_id: benefitId,
+    } as HideBenefitRequest)
   },
 
   async unhideBenefit(benefitId: number): Promise<void> {
-    return apiClient.post<void>('/profile/unhide_benefit/', { benefit_id: benefitId } as UnhideBenefitRequest)
+    return apiClient.post<void>('/profile/unhide_benefit/', {
+      benefit_id: benefitId,
+    } as UnhideBenefitRequest)
   },
 }
-

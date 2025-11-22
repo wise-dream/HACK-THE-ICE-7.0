@@ -1,5 +1,5 @@
-import { apiClient } from './client'
 import type { Category, Region } from '~/entities/benefit'
+import { apiClient } from './client'
 
 export const referencesApi = {
   async getCategories(): Promise<Category[]> {
@@ -18,4 +18,3 @@ export const referencesApi = {
     return apiClient.get<Region>(`/regions/${id}/`)
   },
 }
-

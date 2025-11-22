@@ -1,4 +1,9 @@
-import type { BeneficiaryCategory, BenefitStatus, Region, Category } from '../../benefit/model/types'
+import type {
+  BeneficiaryCategory,
+  BenefitStatus,
+  Category,
+  Region,
+} from '../../benefit/model/types'
 
 export interface Partner {
   name: string
@@ -32,4 +37,3 @@ export interface CommercialOffer {
   views_count?: number
   popularity_score?: number
 }
-

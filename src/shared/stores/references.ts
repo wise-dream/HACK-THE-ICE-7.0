@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { referencesApi } from '~/shared/api/references'
 import type { Category, Region } from '~/entities/benefit'
+import { referencesApi } from '~/shared/api/references'
 
 export const useReferencesStore = defineStore('references', () => {
   const categories = ref<Category[]>([])
@@ -52,7 +52,9 @@ export const useReferencesStore = defineStore('references', () => {
   }
 
   const initialize = async (): Promise<void> => {
-    if (isInitialized.value) return
+    if (isInitialized.value) {
+      return
+    }
 
     try {
       isLoading.value = true
@@ -83,4 +85,3 @@ export const useReferencesStore = defineStore('references', () => {
     clearCache,
   }
 })
-

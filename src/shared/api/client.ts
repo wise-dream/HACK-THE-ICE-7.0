@@ -1,8 +1,23 @@
 import type { AuthTokens } from '~/entities/user'
 
+interface NuxtWindow extends Window {
+  __NUXT__?: {
+    config?: {
+      public?: {
+        apiBase?: string
+      }
+    }
+  }
+}
+
 const getApiBaseUrl = (): string => {
   if (typeof window !== 'undefined') {
-    return (window as any).__NUXT__?.config?.public?.apiBase || process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000/api'
+    const nuxtWindow = window as NuxtWindow
+    return (
+      nuxtWindow.__NUXT__?.config?.public?.apiBase ||
+      process.env.NUXT_PUBLIC_API_BASE ||
+      'http://localhost:8000/api'
+    )
   }
   return process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000/api'
 }
@@ -47,8 +62,8 @@ const refreshAccessToken = async (): Promise<string | null> => {
   if (!refresh) return null
 
   try {
-    const API_BASE_URL = getApiBaseUrl()
-    const response = await fetch(`${API_BASE_URL}/auth/refresh/`, {
+    const ApiBaseUrl = getApiBaseUrl()
+    const response = await fetch(`${ApiBaseUrl}/auth/refresh/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refresh }),
@@ -66,27 +81,32 @@ const refreshAccessToken = async (): Promise<string | null> => {
   }
 }
 
+export type QueryParamValue = string | number | boolean | (string | number)[] | undefined | null
+
+interface ApiError {
+  status?: number
+  message?: string
+  response?: {
+    data?: Record<string, string | string[]>
+  }
+  [key: string]: unknown
+}
+
 export const apiClient = {
   async request<T>(
     endpoint: string,
     options: {
       method?: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE'
-      body?: any
-      params?: Record<string, any>
+      body?: unknown
+      params?: Record<string, QueryParamValue>
       headers?: Record<string, string>
       requireAuth?: boolean
     } = {}
   ): Promise<T> {
-    const {
-      method = 'GET',
-      body,
-      params,
-      headers = {},
-      requireAuth = true,
-    } = options
+    const { method = 'GET', body, params, headers = {}, requireAuth = true } = options
 
-    const API_BASE_URL = getApiBaseUrl()
-    const url = new URL(endpoint, API_BASE_URL)
+    const ApiBaseUrl = getApiBaseUrl()
+    const url = new URL(endpoint, ApiBaseUrl)
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
@@ -118,8 +138,9 @@ export const apiClient = {
         throw { status: response.status, ...error }
       }
       return await response.json()
-    } catch (error: any) {
-      if (error.status === 401 && requireAuth) {
+    } catch (error: unknown) {
+      const apiError = error as ApiError
+      if (apiError.status === 401 && requireAuth) {
         const newToken = await refreshAccessToken()
         if (newToken) {
           requestHeaders.Authorization = `Bearer ${newToken}`
@@ -129,7 +150,9 @@ export const apiClient = {
             body: body ? JSON.stringify(body) : undefined,
           })
           if (!retryResponse.ok) {
-            const retryError = await retryResponse.json().catch(() => ({ message: retryResponse.statusText }))
+            const retryError = await retryResponse
+              .json()
+              .catch(() => ({ message: retryResponse.statusText }))
             throw { status: retryResponse.status, ...retryError }
           }
           return await retryResponse.json()
@@ -139,19 +162,23 @@ export const apiClient = {
     }
   },
 
-  get<T>(endpoint: string, params?: Record<string, any>, requireAuth = true): Promise<T> {
+  get<T>(
+    endpoint: string,
+    params?: Record<string, QueryParamValue>,
+    requireAuth = true
+  ): Promise<T> {
     return this.request<T>(endpoint, { method: 'GET', params, requireAuth })
   },
 
-  post<T>(endpoint: string, body?: any, requireAuth = true): Promise<T> {
+  post<T>(endpoint: string, body?: unknown, requireAuth = true): Promise<T> {
     return this.request<T>(endpoint, { method: 'POST', body, requireAuth })
   },
 
-  patch<T>(endpoint: string, body?: any, requireAuth = true): Promise<T> {
+  patch<T>(endpoint: string, body?: unknown, requireAuth = true): Promise<T> {
     return this.request<T>(endpoint, { method: 'PATCH', body, requireAuth })
   },
 
-  put<T>(endpoint: string, body?: any, requireAuth = true): Promise<T> {
+  put<T>(endpoint: string, body?: unknown, requireAuth = true): Promise<T> {
     return this.request<T>(endpoint, { method: 'PUT', body, requireAuth })
   },
 
@@ -159,4 +186,3 @@ export const apiClient = {
     return this.request<T>(endpoint, { method: 'DELETE', requireAuth })
   },
 }
-

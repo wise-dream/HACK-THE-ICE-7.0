@@ -1,4 +1,4 @@
-import type { User, UserProfile, UserPreferences } from './types'
+import type { User, UserPreferences, UserProfile } from './types'
 
 export const mockUser: User = {
   id: 1,
@@ -83,4 +83,3 @@ export const mockUsers: User[] = [
     last_login: '2025-01-12T13:10:00Z',
   },
 ]
-

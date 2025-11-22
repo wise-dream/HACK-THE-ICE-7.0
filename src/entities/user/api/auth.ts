@@ -1,12 +1,10 @@
 import { apiClient } from '~/shared/api/client'
 import type {
-  RegisterData,
-  LoginData,
   AuthResponse,
   AuthTokens,
-  User,
   OAuthGosuslugiRequest,
-  ChangePasswordData,
+  RegisterData,
+  User,
 } from '../model/types'
 
 export const authApi = {
@@ -54,4 +52,3 @@ export const authApi = {
     })
   },
 }
-

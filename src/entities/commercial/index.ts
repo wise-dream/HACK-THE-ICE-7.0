@@ -1,5 +1,4 @@
 export type {
-  Partner,
   CommercialOffer,
+  Partner,
 } from './model/types'
-

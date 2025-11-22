@@ -1,10 +1,10 @@
 <script setup lang="ts">
 const tabs = [
-	{ label: 'Главная', href: '/', icon: 'mdi:home' },
-	{ label: 'Льготы', href: '/benefits', icon: 'mdi:gift' },
-	{ label: 'Помощник', href: '/assistant', icon: 'mdi:robot-happy' },
-	{ label: 'Профиль', href: '/profile', icon: 'mdi:account-circle' },
-];
+  { label: 'Главная', href: '/', icon: 'mdi:home' },
+  { label: 'Льготы', href: '/benefits', icon: 'mdi:gift' },
+  { label: 'Помощник', href: '/assistant', icon: 'mdi:robot-happy' },
+  { label: 'Профиль', href: '/profile', icon: 'mdi:account-circle' },
+]
 </script>
 
 <template>

@@ -22,11 +22,7 @@ export type BenefitCategory =
   | 'education'
   | 'communication'
 
-export type BenefitStatus =
-  | 'active'
-  | 'expiring_soon'
-  | 'expired'
-  | 'requires_verification'
+export type BenefitStatus = 'active' | 'expiring_soon' | 'expired' | 'requires_verification'
 
 export interface Region {
   id?: number
@@ -53,6 +49,7 @@ export interface Benefit {
   applies_to_all_regions?: boolean
   valid_from: string
   valid_to?: string | null
+  valid_until?: string | null
   status: BenefitStatus
   requirements?: string
   how_to_get?: string
@@ -62,6 +59,8 @@ export interface Benefit {
   categories?: Category[]
   views_count?: number
   popularity_score?: number
+  requires_verification?: boolean
+  created_at?: string
 }
 
 export interface SearchResult {

@@ -1,17 +1,16 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
-import { authApi } from '~/entities/user/api/auth'
-import { profileApi } from '~/entities/user/api/profile'
-import { getAccessToken, getRefreshToken, clearTokens, setTokens } from '~/shared/api/client'
+import { computed, ref } from 'vue'
+import type { BeneficiaryCategory, BenefitCategory } from '~/entities/benefit'
 import type {
+  OAuthGosuslugiRequest,
+  RegisterData,
+  UpdatePreferencesData,
   User,
   UserProfile,
-  RegisterData,
-  OAuthGosuslugiRequest,
-  UpdatePreferencesData,
-  BeneficiaryCategory,
-  BenefitCategory,
 } from '~/entities/user'
+import { authApi } from '~/entities/user/api/auth'
+import { profileApi } from '~/entities/user/api/profile'
+import { clearTokens, getAccessToken, getRefreshToken, setTokens } from '~/shared/api/client'
 
 export const useUserStore = defineStore('user', () => {
   const user = ref<User | null>(null)
@@ -23,10 +22,10 @@ export const useUserStore = defineStore('user', () => {
 
   const initAuth = () => {
     if (typeof window === 'undefined') return
-    
+
     const storedAccessToken = getAccessToken()
     const storedRefreshToken = getRefreshToken()
-    
+
     if (storedAccessToken && storedRefreshToken) {
       accessToken.value = storedAccessToken
       refreshToken.value = storedRefreshToken
@@ -128,7 +127,7 @@ export const useUserStore = defineStore('user', () => {
       const response = await authApi.refreshToken(refreshToken.value)
       accessToken.value = response.access
       setTokens({ access: response.access, refresh: refreshToken.value })
-      
+
       return response.access
     } catch (error) {
       await logout()
@@ -142,7 +141,7 @@ export const useUserStore = defineStore('user', () => {
       const currentUser = await authApi.getCurrentUser()
       user.value = currentUser
       isAuthenticated.value = true
-      
+
       try {
         const profile = await profileApi.getProfile()
         userProfile.value = profile
@@ -231,9 +230,8 @@ export const useUserStore = defineStore('user', () => {
       isLoading.value = true
       await profileApi.unhideBenefit(benefitId)
       if (userProfile.value?.preferences?.hidden_benefits) {
-        userProfile.value.preferences.hidden_benefits = userProfile.value.preferences.hidden_benefits.filter(
-          (id) => id !== benefitId
-        )
+        userProfile.value.preferences.hidden_benefits =
+          userProfile.value.preferences.hidden_benefits.filter((id) => id !== benefitId)
       }
     } catch (error) {
       throw error
@@ -255,6 +253,7 @@ export const useUserStore = defineStore('user', () => {
     userRegion,
     userInterests,
     isVerified,
+    initAuth,
     login,
     logout,
     register,
@@ -269,4 +268,3 @@ export const useUserStore = defineStore('user', () => {
     unhideBenefit,
   }
 })
-

@@ -1,9 +1,13 @@
-export const buildQueryString = (params: Record<string, any>): string => {
+export const buildQueryString = (
+  params: Record<string, string | number | boolean | (string | number)[] | undefined | null>
+): string => {
   const searchParams = new URLSearchParams()
   Object.entries(params).forEach(([key, value]) => {
     if (value !== undefined && value !== null && value !== '') {
       if (Array.isArray(value)) {
-        value.forEach((item) => searchParams.append(key, String(item)))
+        value.forEach((item) => {
+          searchParams.append(key, String(item))
+        })
       } else if (typeof value === 'boolean') {
         searchParams.append(key, value ? 'true' : 'false')
       } else {
@@ -40,7 +44,7 @@ export const parsePaginationResponse = <T>(response: {
     if (url) {
       const pageMatch = url.match(/[?&]page=(\d+)/)
       if (pageMatch) {
-        pagination.currentPage = parseInt(pageMatch[1], 10)
+        pagination.currentPage = Number.parseInt(pageMatch[1] ?? '0', 10)
       }
     }
     if (pagination.count && pagination.currentPage) {
@@ -55,15 +59,19 @@ export const parsePaginationResponse = <T>(response: {
 }
 
 export const extractPageFromUrl = (url: string | null): number | null => {
-  if (!url) return null
+  if (!url) {
+    return null
+  }
   const match = url.match(/[?&]page=(\d+)/)
-  return match ? parseInt(match[1], 10) : null
+  return match ? Number.parseInt(match[1] ?? '0', 10) : null
 }
 
-export const buildPaginationParams = (page: number, pageSize: number = 20): Record<string, any> => {
+export const buildPaginationParams = (
+  page: number,
+  pageSize: number = 20
+): { page: number; page_size: number } => {
   return {
     page,
     page_size: pageSize,
   }
 }
-

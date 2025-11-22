@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MainPage } from '~/pages/main';
+import { MainPage } from '~/pages/main'
 </script>
 
 <template>
